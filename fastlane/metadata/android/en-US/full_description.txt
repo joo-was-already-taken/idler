@@ -1,0 +1,5 @@
+Idler is a minimal utility that adds quick settings tile for keeping your device's screen awake.
+Simply toggle it on and off to switch between your normal screen timeout and no timeout.
+
+Permissions:
+"Modify system settings" permission is required.

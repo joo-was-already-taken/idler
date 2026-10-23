@@ -1,0 +1,5 @@
+Idler to minimalna aplikacja, która zainstalowaniu dodaje kafelek do szybkich ustawień (panel rozwijany od góry).
+Przełączaj go żeby zmieniać między swoim normalnym czasem wygaszania ekranu i jego brakiem.
+
+Uprawnienia:
+Uprawnienie "Modyfikowanie ustawień systemu" jest potrzebne.

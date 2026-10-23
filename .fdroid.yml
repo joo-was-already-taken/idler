@@ -1,0 +1,22 @@
+Categories:
+  - System
+License: MIT
+AuthorName: joo-was-already-taken
+SourceCode: https://github.com/joo-was-already-taken/idler
+IssueTracker: https://github.com/joo-was-already-taken/idler/issues
+
+AutoName: Idler
+Summary: Keeps your screen awake
+
+RepoType: git
+Repo: https://github.com/joo-was-already-taken/idler.git
+
+Builds:
+  - versionName: 1.0.0
+    versionCode: 1
+    commit: v1.0.0
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags

@@ -32,6 +32,7 @@
             jdk17
             gradle
             androidSdk
+            fdroidserver
           ];
           ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
           GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/36.0.0/aapt2";

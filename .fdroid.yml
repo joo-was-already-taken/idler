@@ -1,0 +1,22 @@
+Categories:
+  - System
+License: MIT
+AuthorName: joo-was-already-taken
+SourceCode: https://github.com/joo-was-already-taken/idler
+IssueTracker: https://github.com/joo-was-already-taken/idler/issues
+
+AutoName: Idler
+
+RepoType: git
+Repo: https://github.com/joo-was-already-taken/idler.git
+
+Builds:
+  - versionName: 0.1.0
+    versionCode: 100
+    commit: v0.1.0
+    gradle:
+      - yes
+    prebuild: sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags

@@ -1,0 +1,8 @@
+.direnv/
+.gradle
+build
+bin/
+.android-sdk
+.settings/
+.classpath
+.project

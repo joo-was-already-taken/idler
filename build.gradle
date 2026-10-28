@@ -1,0 +1,49 @@
+plugins {
+    id 'com.android.application' version '8.7.3'
+    id 'eclipse'
+}
+
+eclipse {
+    classpath {
+        file {
+            whenMerged { classpath ->
+                if (!classpath.entries.any { it instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder && it.path == 'src/main/java' }) {
+                    classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/main/java', null))
+                }
+                def relativeJar = '.android-sdk/platforms/android-34/android.jar'
+                if (file(relativeJar).exists()) {
+                    classpath.entries.removeAll { it instanceof org.gradle.plugins.ide.eclipse.model.Library }
+                    classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Library(fileReference(relativeJar)))
+                }
+            }
+        }
+    }
+}
+
+android {
+    namespace = 'io.github.joowasalreadytaken.idler'
+
+    compileSdk = 34
+    buildToolsVersion = '34.0.0'
+
+    defaultConfig {
+        applicationId = 'io.github.joowasalreadytaken.idler'
+        minSdk = 34
+        targetSdk = 34
+        versionCode = 100
+        versionName = '0.1.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled = true
+                shrinkResources = true
+                proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

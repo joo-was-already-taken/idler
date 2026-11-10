@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application' version '8.7.3'
+    id 'com.android.application' version '9.5.1'
     id 'eclipse'
 }
 
@@ -10,7 +10,7 @@ eclipse {
                 if (!classpath.entries.any { it instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder && it.path == 'src/main/java' }) {
                     classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/main/java', null))
                 }
-                def relativeJar = '.android-sdk/platforms/android-34/android.jar'
+                def relativeJar = '.android-sdk/platforms/android-36/android.jar'
                 if (file(relativeJar).exists()) {
                     classpath.entries.removeAll { it instanceof org.gradle.plugins.ide.eclipse.model.Library }
                     classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Library(fileReference(relativeJar)))
@@ -23,13 +23,13 @@ eclipse {
 android {
     namespace = 'io.github.joowasalreadytaken.idler'
 
-    compileSdk = 34
-    buildToolsVersion = '34.0.0'
+    compileSdk = 36
+    buildToolsVersion = '36.0.0'
 
     defaultConfig {
         applicationId = 'io.github.joowasalreadytaken.idler'
         minSdk = 34
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 2
         versionName = '0.2.0'
     }

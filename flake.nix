@@ -10,8 +10,8 @@
 
       perSystem = { system, pkgs, ... }: let
         androidComposition = pkgs.androidenv.composeAndroidPackages {
-          buildToolsVersions = [ "34.0.0" ];
-          platformVersions = [ "34" ];
+          buildToolsVersions = [ "36.0.0" ];
+          platformVersions = [ "36" ];
 
           includeEmulator = false;
           includeSystemImages = false;
@@ -29,14 +29,14 @@
         };
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            jdk17
+            jdk25
             gradle
             jdt-language-server
             androidSdk
             fdroidserver
           ];
           ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
-          GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/34.0.0/aapt2";
+          GRADLE_OPTS="-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/36.0.0/aapt2";
           shellHook = /*bash*/ ''
             ln -sfn "${androidSdk}/libexec/android-sdk" .android-sdk
             if [[ ! -f .classpath ]]; then

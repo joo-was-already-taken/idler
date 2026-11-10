@@ -25,7 +25,7 @@ jobs:
         uses: actions/setup-java@v6
         with:
           distribution: temurin
-          java-version: 17
+          java-version: 25
 
       - name: Build with Gradle
         run: ./gradlew assembleRelease
@@ -37,7 +37,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          BUILD_TOOLS="$ANDROID_HOME/build-tools/34.0.0"
+          BUILD_TOOLS="$ANDROID_HOME/build-tools/36.0.0"
           KEYSTORE_FILE="$RUNNER_TEMP/release.keystore"
 
           trap 'rm -f "$KEYSTORE_FILE"' EXIT

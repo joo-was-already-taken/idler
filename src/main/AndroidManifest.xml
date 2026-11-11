@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
   <application
@@ -10,7 +10,7 @@
 
     <service
       android:name="io.github.joowasalreadytaken.idler.Idler"
-      android:label="Idle screen"
+      android:label="Idler"
       android:icon="@drawable/ic_tile"
       android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
       android:exported="true">

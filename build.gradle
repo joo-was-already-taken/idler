@@ -4,16 +4,26 @@ plugins {
 }
 
 eclipse {
+    jdt {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     classpath {
         file {
             whenMerged { classpath ->
                 if (!classpath.entries.any { it instanceof org.gradle.plugins.ide.eclipse.model.SourceFolder && it.path == 'src/main/java' }) {
                     classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder('src/main/java', null))
                 }
-                def relativeJar = '.android-sdk/platforms/android-36/android.jar'
-                if (file(relativeJar).exists()) {
-                    classpath.entries.removeAll { it instanceof org.gradle.plugins.ide.eclipse.model.Library }
-                    classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Library(fileReference(relativeJar)))
+                classpath.entries.removeAll { it instanceof org.gradle.plugins.ide.eclipse.model.Container }
+                classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Container('org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17/'))
+                classpath.entries.removeAll { it instanceof org.gradle.plugins.ide.eclipse.model.Library }
+                def androidJar = '.android-sdk/platforms/android-36/android.jar'
+                if (file(androidJar).exists()) {
+                    classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Library(fileReference(androidJar)))
+                }
+                def rJar = 'build/intermediates/compile_and_runtime_r_class_jar/debug/processDebugResources/R.jar'
+                if (file(rJar).exists()) {
+                    classpath.entries.add(new org.gradle.plugins.ide.eclipse.model.Library(fileReference(rJar)))
                 }
             }
         }

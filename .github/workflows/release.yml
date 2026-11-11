@@ -61,4 +61,4 @@ jobs:
           tag_name: ${{ steps.versioning.outputs.tag_name }}
           name: ${{ steps.versioning.outputs.release_name }}
           files: build/outputs/apk/release/idler-release.apk
-          generate_release_notes: false
+          generate_release_notes: true

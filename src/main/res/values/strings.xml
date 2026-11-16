@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">Idler</string>
+  <string name="notification_channel_name">Idler Indicator</string>
+  <string name="notification_text">Screen will not turn off automatically.</string>
+  <string name="notification_action_turn_off">Turn off</string>
+</resources>

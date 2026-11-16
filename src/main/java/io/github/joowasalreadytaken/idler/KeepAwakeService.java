@@ -1,36 +1,74 @@
 package io.github.joowasalreadytaken.idler;
 
+import android.app.ForegroundServiceStartNotAllowedException;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.service.quicksettings.TileService;
+import android.util.Log;
 
 public class KeepAwakeService extends Service {
+
+    /* package */ enum State {
+        STOPPED,
+        STARTING,
+        RUNNING,
+    }
+
+    /* package */ interface StateListener {
+        void onStateChanged(State state);
+    }
 
     private static final String WAKE_LOCK_TAG = "idler:wake_lock";
     private static final int NOTIFICATION_ID = 42;
     private static final String NOTIFICATION_CHANNEL_ID = "idler_indicator_channel";
     private static final String ACTION_STOP = KeepAwakeService.class.getName() + ".ACTION_STOP";
 
-    private static volatile boolean running = false;
+    private static State state = State.STOPPED;
+    private static StateListener stateListener;
 
     private PowerManager.WakeLock wakeLock;
 
-    /* package */ static boolean isRunning() {
-        return running;
+    /* package */ static State getState() {
+        return state;
+    }
+
+    /* package */ static void setStateListener(StateListener listener) {
+        stateListener = listener;
+    }
+
+    /* package */ static void start(Context context) {
+        setState(State.STARTING);
+        try {
+            context.startForegroundService(new Intent(context, KeepAwakeService.class));
+        } catch (ForegroundServiceStartNotAllowedException e) {
+            Log.e(Idler.TAG, "Not allowed to start keep-awake service", e);
+            setState(State.STOPPED);
+        }
+    }
+
+    /* package */ static void stop(Context context) {
+        context.stopService(new Intent(context, KeepAwakeService.class));
+    }
+
+    private static void setState(State newState) {
+        state = newState;
+        if (stateListener != null) {
+            stateListener.onStateChanged(newState);
+        }
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        running = true;
         createNotificationChannel();
     }
 
@@ -41,8 +79,16 @@ public class KeepAwakeService extends Service {
             return START_NOT_STICKY;
         }
 
-        startForeground(NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        try {
+            startForeground(NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        } catch (ForegroundServiceStartNotAllowedException e) {
+            Log.e(Idler.TAG, "Not allowed to run keep-awake service in the foreground", e);
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
         acquireWakeLock();
+        setState(State.RUNNING);
         return START_NOT_STICKY;
     }
 
@@ -52,7 +98,7 @@ public class KeepAwakeService extends Service {
             wakeLock.release();
         }
         wakeLock = null;
-        running = false;
+        setState(State.STOPPED);
         stopForeground(STOP_FOREGROUND_REMOVE);
         TileService.requestListeningState(this, new ComponentName(this, Idler.class));
         super.onDestroy();

@@ -1,34 +1,28 @@
 package io.github.joowasalreadytaken.idler;
 
 import android.Manifest;
-import android.app.ForegroundServiceStartNotAllowedException;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
-import android.util.Log;
 
 public class Idler extends TileService {
 
     /* package */ static final String TAG = "Idler";
 
-    private enum TileState {
-        ACTIVE(Tile.STATE_ACTIVE),
-        INACTIVE(Tile.STATE_INACTIVE);
-
-        private final int value;
-
-        TileState(int value) {
-            this.value = value;
-        }
-    }
-
     @Override
     public void onStartListening() {
         super.onStartListening();
-        setTileState(KeepAwakeService.isRunning() ? TileState.ACTIVE : TileState.INACTIVE);
+        KeepAwakeService.setStateListener(this::showState);
+        showState(KeepAwakeService.getState());
+    }
+
+    @Override
+    public void onStopListening() {
+        KeepAwakeService.setStateListener(null);
+        super.onStopListening();
     }
 
     @Override
@@ -38,17 +32,10 @@ public class Idler extends TileService {
             return;
         }
 
-        var intent = new Intent(this, KeepAwakeService.class);
-        if (KeepAwakeService.isRunning()) {
-            stopService(intent);
-            setTileState(TileState.INACTIVE);
-        } else {
-            try {
-                startForegroundService(intent);
-                setTileState(TileState.ACTIVE);
-            } catch (ForegroundServiceStartNotAllowedException e) {
-                Log.e(TAG, "Not allowed to start keep-awake service", e);
-            }
+        switch (KeepAwakeService.getState()) {
+            case STOPPED -> KeepAwakeService.start(this);
+            case RUNNING -> KeepAwakeService.stop(this);
+            case STARTING -> {}
         }
     }
 
@@ -66,13 +53,13 @@ public class Idler extends TileService {
         startActivityAndCollapse(pendingIntent);
     }
 
-    private void setTileState(TileState state) {
+    private void showState(KeepAwakeService.State state) {
         var tile = getQsTile();
         if (tile == null) {
             return;
         }
 
-        tile.setState(state.value);
+        tile.setState(state == KeepAwakeService.State.STOPPED ? Tile.STATE_INACTIVE : Tile.STATE_ACTIVE);
         tile.updateTile();
     }
 }
